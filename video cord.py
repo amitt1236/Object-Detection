@@ -1,5 +1,5 @@
 import cv2
-
+import numpy as np
 
 def click_event(event, x, y, flags, param):
     global cord
@@ -21,11 +21,16 @@ end = False
 text = 'hello'
 
 # video feed
-cap = cv2.VideoCapture(1)
-cap.set(cv2.CAP_PROP_FPS, 60)
+video_path = './video/1.avi'
+vid = cv2.VideoCapture(video_path)
 
-while cap.isOpened():
-    ret, frame = cap.read()
+while True:
+    ret, frame = vid.read()
+    if not ret:
+        break
+    # mask = np.ones((512, 512))  # (height, width)
+    # myROI = [(1698, 657), (1168, 789), (2737, 1093), (2253, 1387)]  # (x, y)
+    # cv2.fillPoly(mask, [np.array(myROI)], 0)
 
     font = cv2.FONT_HERSHEY_SIMPLEX
 
