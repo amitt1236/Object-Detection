@@ -18,8 +18,8 @@ The DeepSort algorithm is from https://github.com/nwojke/deep_sort.
 
 ## Speed inference. 
 <p float="left">
-<img src="./ScreenShots/1.png" width=50% height=50%>
-<img src="./ScreenShots/2.png" width=50% height=50%>
+<img src="./ScreenShots/1.png" width=45% height=45%>
+<img src="./ScreenShots/2.png" width=45% height=45%>
 </p>
 
 Took the video of the Intersection, and picked a car, looked for the length of the exact car model  
