@@ -1,7 +1,7 @@
 import cv2
 
 input_size = 512
-video_path = './video/1.mov'
+video_path = './video/3.mov'
 
 vid = cv2.VideoCapture(video_path)
 width = int(vid.get(cv2.CAP_PROP_FRAME_WIDTH))

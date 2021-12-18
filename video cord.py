@@ -21,9 +21,9 @@ end = False
 text = 'hello'
 
 # video feed
-video_path = './video/1.avi'
+video_path = './video/3.mov'
 vid = cv2.VideoCapture(video_path)
-
+print(int(vid.get(cv2.CAP_PROP_FPS)))
 while True:
     ret, frame = vid.read()
     if not ret:
@@ -83,8 +83,7 @@ while True:
 print('top left:' + ','.join([str(val) for val in topLeft]))
 print('bottom left:' + ','.join([str(val) for val in bottomLeft]))
 print('top right' + ','.join([str(val) for val in topRight]))
-print('top left' + ','.join([str(val) for val in bottomRight]))
+print('bottom right' + ','.join([str(val) for val in bottomRight]))
 
 # When everything done, release the capture
-cap.release()
 cv2.destroyAllWindows()

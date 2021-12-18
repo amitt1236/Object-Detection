@@ -32,7 +32,8 @@ flags.DEFINE_boolean('dont_show', False, 'dont show video output')
 flags.DEFINE_boolean('info', True, 'show detailed info of tracked objects')
 flags.DEFINE_boolean('count', False, 'count objects being tracked on screen')
 
-
+start_timing = np.zeros(1000)
+speed = np.zeros(1000)
 def main(_argv):
     # Definition of the parameters
     max_cosine_distance = 0.4
@@ -68,7 +69,6 @@ def main(_argv):
         fps = int(vid.get(cv2.CAP_PROP_FPS))
         codec = cv2.VideoWriter_fourcc(*FLAGS.output_format)
         out = cv2.VideoWriter(FLAGS.output, codec, fps, (width, height))
-
     frame_num = 0
     # while video is running
     while True:
@@ -180,6 +180,18 @@ def main(_argv):
             cv2.rectangle(frame, (int(bbox[0]), int(bbox[1] - 30)),
                           (int(bbox[0]) + (len(class_name) + len(str(track.track_id))) * 17, int(bbox[1])), color, -1)
             cv2.putText(frame, class_name + "-" + str(track.track_id), (int(bbox[0]), int(bbox[1] - 10)), 0, 0.75,
+                        (255, 255, 255), 2)
+
+            if start_timing[track.track_id] == 0 and bbox[1] < (bbox[0] * -0.6) + 1056:
+                start_timing[track.track_id] = frame_num
+            if start_timing[track.track_id] != 0 and\
+                    speed[track.track_id] == 0 and bbox[1] < (bbox[0] * -0.6) + 860:
+                if start_timing[track.track_id] > frame_num - 15:
+                    speed[track.track_id] = -1
+                else:
+                    speed[track.track_id] = 4.8 / ((frame_num - start_timing[track.track_id]) * 1/59) * 3.6
+            if speed[track.track_id] > 0:
+                cv2.putText(frame, 'speed' + str(int(speed[track.track_id])), (int(bbox[0]), int(bbox[1] - 40)), 0, 0.75,
                         (255, 255, 255), 2)
 
             # if enable info flag then print details about each track
