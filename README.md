@@ -2,7 +2,7 @@
 
 ## Car detection in a Intersection. 
 Using YoloV4 and DeepSort to Recognise cars and create bounding boxes.  
-Using two linear equations in order to create two lines with known Distence. 
+Using two linear equations in order to create two lines with known Distence between them.   
 and infrence spped from the time that it takes to cross that distance.
 
 ## why Yolo and DeepSort?  
