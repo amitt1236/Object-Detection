@@ -17,6 +17,11 @@ and Yolo-512.
 The DeepSort algorithm is from https://github.com/nwojke/deep_sort. 
 
 ## Speed inference. 
+<p float="left">
+<img src="./ScreenShots/1.png" width=30% height=30%>
+<img src="./ScreenShots/2.png" width=30% height=30%>
+</p>
+
 Took the video of the Intersection, and picked a car, looked for the length of the exact car model  
 and from that i got two points that i know the distance between.  
 i took two lines that are vertical to the driving direction using opencv (video_cord.py)  
