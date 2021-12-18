@@ -7,8 +7,8 @@ Using two linear equations in order to create two lines with known Distence betw
 and infrence the speed from the time that it takes to cross that distance.
 
 ## why Yolo and DeepSort?  
-No specific reason, just getting to know this kinds of model.  
-Probably can be simplefid using optical-flow or other computer vision tech.
+No specific reason, just getting to know this kind of model.  
+Probably can be simplefid using optical-flow or other computer vision techniques.    
 Yolo and DeepSort is computational expensive.
 
 ## Yolo and DeepSort implemention   
