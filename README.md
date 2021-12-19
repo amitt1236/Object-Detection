@@ -1,7 +1,5 @@
 # Speed-Cam
-"source": [
-        "<a href=\"https://colab.research.google.com/github/amitt1236/Speed-cam/blob/main/Speed_Cam.ipynb\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
-      ]
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/amitt1236/Speed-cam/blob/main/Speed_Cam.ipynb)
 <img src="./ScreenShots/5-out.gif" width=100% height=100%>
 <img src="./ScreenShots/3.png" width=100% height=100%>
 
