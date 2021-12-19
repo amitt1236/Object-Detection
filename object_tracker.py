@@ -77,11 +77,14 @@ def main(_argv):
     # while video is running
     while True:
         ret, frame = vid.read()
-        if ret:
-            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        else:
+        # no video input
+        if not ret:
             print('End of video')
             break
+        # converting to rgb for yolo model
+        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+
+        # frame count
         frame_num += 1
         start_time = time.time()
         print('Frame #: ', frame_num)
@@ -91,6 +94,7 @@ def main(_argv):
         image_data = image_data / 255.
         image_data = image_data[np.newaxis, ...].astype(np.float32)
 
+        # feeding the model with batch of one
         batch_data = tf.constant(image_data)
         pred_bbox = infer(batch_data)
         for key, value in pred_bbox.items():

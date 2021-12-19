@@ -1,5 +1,5 @@
 import cv2
-import numpy as np
+
 
 def click_event(event, x, y, flags, param):
     global cord
@@ -28,10 +28,6 @@ while True:
     ret, frame = vid.read()
     if not ret:
         break
-    # mask = np.ones((512, 512))  # (height, width)
-    # myROI = [(1698, 657), (1168, 789), (2737, 1093), (2253, 1387)]  # (x, y)
-    # cv2.fillPoly(mask, [np.array(myROI)], 0)
-
     font = cv2.FONT_HERSHEY_SIMPLEX
 
     cv2.putText(frame, text, (0, 100), font, 4, (255, 255, 255), 2, cv2.LINE_AA)
@@ -85,5 +81,5 @@ print('bottom left:' + ','.join([str(val) for val in bottomLeft]))
 print('top right' + ','.join([str(val) for val in topRight]))
 print('bottom right' + ','.join([str(val) for val in bottomRight]))
 
-# When everything done, release the capture
+# When everything done, release.
 cv2.destroyAllWindows()
