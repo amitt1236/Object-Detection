@@ -1,5 +1,6 @@
 import os
 import cv2
+from google.colab.patches import cv2_imshow
 import numpy as np
 import matplotlib.pyplot as plt
 import time
@@ -34,6 +35,8 @@ flags.DEFINE_boolean('count', False, 'count objects being tracked on screen')
 
 start_timing = np.zeros(1000)
 speed = np.zeros(1000)
+
+
 def main(_argv):
     # Definition of the parameters
     max_cosine_distance = 0.4
@@ -155,7 +158,7 @@ def main(_argv):
         cmap = plt.get_cmap('tab20b')
         colors = [cmap(i)[:3] for i in np.linspace(0, 1, 20)]
 
-        # run non-maxima supression
+        # run non-maxima suppression
         boxs = np.array([d.tlwh for d in detections])
         scores = np.array([d.confidence for d in detections])
         classes = np.array([d.class_name for d in detections])
@@ -173,7 +176,7 @@ def main(_argv):
             bbox = track.to_tlbr()
             class_name = track.get_class()
 
-            # draw bbox on screen
+            # draw bounding box on screen
             color = colors[int(track.track_id) % len(colors)]
             color = [i * 255 for i in color]
             cv2.rectangle(frame, (int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3])), color, 2)
@@ -182,17 +185,19 @@ def main(_argv):
             cv2.putText(frame, class_name + "-" + str(track.track_id), (int(bbox[0]), int(bbox[1] - 10)), 0, 0.75,
                         (255, 255, 255), 2)
 
+            # speed inference
             if start_timing[track.track_id] == 0 and bbox[1] < (bbox[0] * -0.6) + 1056:
                 start_timing[track.track_id] = frame_num
-            if start_timing[track.track_id] != 0 and\
+            if start_timing[track.track_id] != 0 and \
                     speed[track.track_id] == 0 and bbox[1] < (bbox[0] * -0.6) + 860:
                 if start_timing[track.track_id] > frame_num - 15:
                     speed[track.track_id] = -1
                 else:
-                    speed[track.track_id] = 4.8 / ((frame_num - start_timing[track.track_id]) * 1/59) * 3.6
+                    speed[track.track_id] = 4.8 / ((frame_num - start_timing[track.track_id]) * 1 / 59) * 3.6
             if speed[track.track_id] > 0:
-                cv2.putText(frame, 'speed' + str(int(speed[track.track_id])), (int(bbox[0]), int(bbox[1] - 40)), 0, 0.75,
-                        (255, 255, 255), 2)
+                cv2.putText(frame, 'speed' + str(int(speed[track.track_id])), (int(bbox[0]), int(bbox[1] - 40)), 0,
+                            0.75,
+                            (255, 255, 255), 2)
 
             # if enable info flag then print details about each track
             if FLAGS.info:
