@@ -1,4 +1,6 @@
 # Speed-Cam
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/amitt1236/Speed-cam/blob/main/Speed_Cam.ipynb)
+<img src="./ScreenShots/5-out.gif" width=100% height=100%>
 <img src="./ScreenShots/3.png" width=100% height=100%>
 
 ## Car detection in a Intersection   
