@@ -1,9 +1,12 @@
-import cv2
-import random
 import colorsys
+import random
+
+import cv2
 import numpy as np
 import tensorflow as tf
+
 from core.config import cfg
+
 
 def load_freeze_layer(model='yolov4', tiny=False):
     if tiny:

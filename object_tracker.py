@@ -1,17 +1,15 @@
-import cv2
-import numpy as np
-import matplotlib.pyplot as plt
 import time
-import tensorflow as tf
-import core.utils as utils
 
+import cv2
+import matplotlib.pyplot as plt
+import numpy as np
+import tensorflow as tf
 from absl import app, flags
 from absl.flags import FLAGS
-
-from core.yolov4 import filter_boxes
 from tensorflow.python.saved_model import tag_constants
-from core.config import cfg
 
+import core.utils as utils
+from core.config import cfg
 # deep sort imports
 from deep_sort import preprocessing, nn_matching
 from deep_sort.detection import Detection
