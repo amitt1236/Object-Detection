@@ -1,15 +1,11 @@
-import os
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 import time
 import tensorflow as tf
-physical_devices = tf.config.experimental.list_physical_devices('GPU')
-if len(physical_devices) > 0:
-    tf.config.experimental.set_memory_growth(physical_devices[0], True)
 import core.utils as utils
 
-from absl import app, flags, logging
+from absl import app, flags
 from absl.flags import FLAGS
 
 from core.yolov4 import filter_boxes
@@ -22,6 +18,12 @@ from deep_sort.detection import Detection
 from deep_sort.tracker import Tracker
 from tools import generate_detections as gdet
 
+# gpu setting
+physical_devices = tf.config.experimental.list_physical_devices('GPU')
+if len(physical_devices) > 0:
+    tf.config.experimental.set_memory_growth(physical_devices[0], True)
+
+# Flags
 flags.DEFINE_string('weights', './tf_model/yolov4-512', 'path to weights file')
 flags.DEFINE_integer('size', 512, 'resize images to')
 flags.DEFINE_boolean('tiny', False, 'yolo or yolo-tiny')
@@ -32,9 +34,10 @@ flags.DEFINE_string('output_format', 'XVID', 'codec used in VideoWriter when sav
 flags.DEFINE_float('iou', 0.45, 'iou threshold')
 flags.DEFINE_float('score', 0.50, 'score threshold')
 flags.DEFINE_boolean('dont_show', True, 'dont show video output')
-flags.DEFINE_boolean('info', True, 'show detailed info of tracked objects')
+flags.DEFINE_boolean('info', False, 'show detailed info of tracked objects')
 flags.DEFINE_boolean('count', False, 'count objects being tracked on screen')
 
+# speed array
 start_timing = np.zeros(1000)
 speed = np.zeros(1000)
 
@@ -58,27 +61,23 @@ def main(_argv):
     saved_model_loaded = tf.saved_model.load(FLAGS.weights, tags=[tag_constants.SERVING])
     infer = saved_model_loaded.signatures['serving_default']
 
-    # begin video capture
-    try:
-        vid = cv2.VideoCapture(int(video_path))
-    except:
-        vid = cv2.VideoCapture(video_path)
+    # video capture
+    vid = cv2.VideoCapture(video_path)
+    # frame counter
+    frame_num = 0
 
-    out = None
-
-    # get video ready to save locally if flag is set
+    # create writer
     if FLAGS.output:
-        # by default VideoCapture returns float instead of int
         width = int(vid.get(cv2.CAP_PROP_FRAME_WIDTH))
         height = int(vid.get(cv2.CAP_PROP_FRAME_HEIGHT))
         fps = int(vid.get(cv2.CAP_PROP_FPS))
         codec = cv2.VideoWriter_fourcc(*FLAGS.output_format)
         out = cv2.VideoWriter(FLAGS.output, codec, fps, (width, height))
-    frame_num = 0
+
     # while video is running
     while True:
-        return_value, frame = vid.read()
-        if return_value:
+        ret, frame = vid.read()
+        if ret:
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         else:
             print('End of video')
@@ -87,7 +86,7 @@ def main(_argv):
         start_time = time.time()
         print('Frame #: ', frame_num)
 
-        frame_size = frame.shape[:2]
+        # resize to yolo input size
         image_data = cv2.resize(frame, (input_size, input_size))
         image_data = image_data / 255.
         image_data = image_data[np.newaxis, ...].astype(np.float32)
@@ -121,9 +120,6 @@ def main(_argv):
         # format bounding boxes from normalized ymin, xmin, ymax, xmax ---> xmin, ymin, width, height
         original_h, original_w, _ = frame.shape
         bboxes = utils.format_boxes(bboxes, original_h, original_w)
-
-        # store all predictions in one parameter for simplicity when calling functions
-        pred_bbox = [bboxes, scores, classes, num_objects]
 
         # read in all class names from config
         class_names = utils.read_class_names(cfg.YOLO.CLASSES)
@@ -223,6 +219,7 @@ def main(_argv):
             out.write(result)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
+    vid.release()
     cv2.destroyAllWindows()
 
 
