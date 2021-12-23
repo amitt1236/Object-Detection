@@ -34,6 +34,6 @@ i could calculate how much time it takes that car to cover a specific disatnce.
 </p>
 
 ## Research
-<img src="./ScreenShots/road_info.png.png" width=75% height=75%>
+<img src="./ScreenShots/road_info.png" width=75% height=75%>
 
 
