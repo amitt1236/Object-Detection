@@ -36,4 +36,6 @@ i could calculate how much time it takes that car to cover a specific disatnce.
 ## Research
 <img src="./ScreenShots/road_info.png" width=75% height=75%>
 
+Lane width is ~3.60. 
+
 

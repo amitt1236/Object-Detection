@@ -1,3 +1,4 @@
+import math
 import time
 
 import cv2
@@ -31,13 +32,17 @@ flags.DEFINE_string('output', './video/5-out.avi', 'path to output video')
 flags.DEFINE_string('output_format', 'XVID', 'codec used in VideoWriter when saving video to file')
 flags.DEFINE_float('iou', 0.45, 'iou threshold')
 flags.DEFINE_float('score', 0.50, 'score threshold')
-flags.DEFINE_boolean('dont_show', True, 'dont show video output')
+flags.DEFINE_boolean('dont_show', False, 'dont show video output')
 flags.DEFINE_boolean('info', False, 'show detailed info of tracked objects')
 flags.DEFINE_boolean('count', False, 'count objects being tracked on screen')
 
 # speed array
 start_timing = np.zeros(1000)
+ending = np.zeros(1000)
 speed = np.zeros(1000)
+road_slope = -0.23
+flag = np.empty(1000, bool)
+flag.fill(False)
 
 
 def main(_argv):
@@ -185,15 +190,28 @@ def main(_argv):
             cv2.putText(frame, class_name + "-" + str(track.track_id), (int(bbox[0]), int(bbox[1] - 10)), 0, 0.75,
                         (255, 255, 255), 2)
 
-            # speed inference
-            if start_timing[track.track_id] == 0 and bbox[1] < (bbox[0] * -0.6) + 1056:
+            # y - mx = y_1 - mx_1
+            # Lower line: y - 0.55x = 26.67
+            # upper line: y - 0.44x = 0.38
+            # driving direction = -0.23
+
+            if not flag[track.track_id]:
                 start_timing[track.track_id] = frame_num
-            if start_timing[track.track_id] != 0 and \
-                    speed[track.track_id] == 0 and bbox[1] < (bbox[0] * -0.6) + 860:
-                if start_timing[track.track_id] > frame_num - 15:
+                ending[track.track_id] = destination(road_slope, bbox[0], bbox[1])
+                flag[track.track_id] = True
+                if track.track_id == 3:
+                    up = upper_vert(road_slope, bbox[0], bbox[1])
+                    down = lower_vert(road_slope, bbox[0], bbox[1])
+                    p1 = (int(up[0]),int(up[1]))
+                    p2 = (int(down[0]), int(down[1]))
+                    cv2.line(frame, p1, p2,(0, 0, 255), 2)
+                    cv2.line(frame, (0,int(ending[track.track_id])), (int(frame[0].size - 100), int((road_slope * frame[0].size - 100) + ending[track.track_id])), (0, 0, 255), 2)
+            elif bbox[1] < ((bbox[0] * road_slope) + ending[track.track_id]):
+                if start_timing[track.track_id] > frame_num - 10:
                     speed[track.track_id] = -1
                 else:
                     speed[track.track_id] = 4.8 / ((frame_num - start_timing[track.track_id]) * 1 / 59) * 3.6
+                flag[track.track_id] = False
             if speed[track.track_id] > 0:
                 cv2.putText(frame, 'speed' + str(int(speed[track.track_id])), (int(bbox[0]), int(bbox[1] - 40)), 0,
                             0.75,
@@ -223,6 +241,37 @@ def main(_argv):
             break
     vid.release()
     cv2.destroyAllWindows()
+
+    # Upper and vert intersection
+
+
+def upper_vert(m, x1, y1):
+    A = np.array([[1, -m], [1, -0.44]])
+    B = np.array([y1 - (m * x1), 7.7])
+    return np.flip(np.linalg.solve(A, B))
+
+    # lower and vert intersection
+
+
+def lower_vert(m, x1, y1):
+    A = np.array([[1, -m], [1, -0.55]])
+    B = np.array([y1 - (m * x1), 59])
+    return np.flip(np.linalg.solve(A, B))
+
+
+# distance between two points
+
+def distance(p1, p2):
+    dist = p1 - p2
+    return math.sqrt(np.dot(dist, dist))
+
+
+def destination(m, x1, y1):
+    p1 = upper_vert(m, x1, y1)
+    p2 = lower_vert(m, x1, y1)
+    b = p2[1] - (p2[0] * m)
+    b -= distance(p1, p2) * 0.5
+    return b
 
 
 if __name__ == '__main__':
