@@ -22,9 +22,9 @@ and Yolo-512.
 The DeepSort algorithm is from https://github.com/nwojke/deep_sort. 
 ipad.jpeg
 ## Speed inference
-<img src="./ScreenShots/speedCam.gif" width=75% height=75%>
-<img src="./ScreenShots/ipad.jpeg" width=75% height=75%>
-<img src="./ScreenShots/lines.png" width=75% height=75%>
+<img src="./ScreenShots/speedCam.gif" width=100% height=100%>
+<img src="./ScreenShots/ipad.jpeg" width=100% height=100%>
+<img src="./ScreenShots/lines.png" width=100% height=100%>
 
 ## Research
 <img src="./ScreenShots/road_info.png" width=75% height=75%>
